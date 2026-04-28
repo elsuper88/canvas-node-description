@@ -28,7 +28,6 @@ interface CanvasNodeMin {
 
 interface CanvasMenuMin {
 	menuEl: HTMLElement;
-	selection?: Set<CanvasNodeMin>;
 }
 
 interface CanvasMin {
@@ -36,6 +35,7 @@ interface CanvasMin {
 	cardMenuEl?: HTMLElement;
 	wrapperEl: HTMLElement;
 	nodes: Map<string, CanvasNodeMin>;
+	selection: Set<unknown>;
 	requestSave?: () => void;
 	requestPushHistory?: (data: unknown) => void;
 }
@@ -227,9 +227,8 @@ export default class CanvasNodeDescriptionPlugin extends Plugin {
 
 		btn.addEventListener("click", (e) => {
 			e.stopPropagation();
-			const selection = canvas.menu?.selection;
-			if (!selection || selection.size === 0) return;
-			const node = Array.from(selection)[0];
+			const node = this.firstSelectedNode(canvas);
+			if (!node) return;
 			this.openModal(canvas, node);
 		});
 
@@ -240,7 +239,24 @@ export default class CanvasNodeDescriptionPlugin extends Plugin {
 	// Modal — edit description
 	// -----------------------------------------------------------------
 
+	private firstSelectedNode(canvas: CanvasMin): CanvasNodeMin | null {
+		const sel = canvas.selection;
+		if (!sel || typeof (sel as Set<unknown>).size !== "number") return null;
+		for (const item of sel as Set<unknown>) {
+			const candidate = item as Partial<CanvasNodeMin> & {
+				path?: unknown;
+			};
+			// Edges have a .path property in Obsidian's canvas; nodes don't.
+			if (candidate?.path !== undefined) continue;
+			if (typeof candidate?.getData === "function") {
+				return candidate as CanvasNodeMin;
+			}
+		}
+		return null;
+	}
+
 	private openModal(canvas: CanvasMin, node: CanvasNodeMin) {
+		if (!node || typeof node.getData !== "function") return;
 		const current = node.getData().description;
 		const modal = new DescriptionModal(
 			this.app,
