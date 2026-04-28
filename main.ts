@@ -499,6 +499,13 @@ class DescriptionModal extends Modal {
 		saveBtn.addEventListener("click", () => this.commitSave());
 	}
 
+	private selectColor(key: string) {
+		this.desc.color = key;
+		this.refreshSwatchActive();
+		this.refreshHexRow();
+		this.updatePreview();
+	}
+
 	private commitSave() {
 		if (!this.desc.text.trim()) {
 			this.onSave(null);
