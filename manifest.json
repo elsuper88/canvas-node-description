@@ -1,0 +1,10 @@
+{
+	"id": "canvas-node-description",
+	"name": "Canvas Node Description",
+	"version": "1.0.0",
+	"minAppVersion": "1.5.0",
+	"description": "Add a labeled description badge above any canvas node, with custom color and global show/hide toggle. Useful to assign roles without swimlanes.",
+	"author": "Raulyn Polanco",
+	"authorUrl": "https://github.com/elsuper88",
+	"isDesktopOnly": false
+}

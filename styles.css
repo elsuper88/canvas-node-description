@@ -1,0 +1,112 @@
+/* =====================================================================
+   Canvas Node Description — badge styling
+
+   Renders the description above each canvas node when:
+   - The node has data-cnd-text="<label>"
+   - Optionally data-cnd-color="<preset|custom>"
+   - The wrapper does NOT have .cnd-hidden
+
+   Position is set on the wrapper: .cnd-pos-top-right (default),
+   .cnd-pos-top-left, .cnd-pos-top-center.
+   ===================================================================== */
+
+.canvas-node[data-cnd-text] {
+	/* Each node gets its own badge color */
+	--cnd-badge-bg: rgba(var(--color-accent-rgb), 0.12);
+	--cnd-badge-fg: var(--color-accent);
+}
+
+.canvas-node[data-cnd-text]::before {
+	content: attr(data-cnd-text);
+	position: absolute;
+	top: calc(-1 * var(--size-4-1) * var(--zoom-multiplier, 1));
+	transform-origin: bottom right;
+	transform: translate(0, -100%) scale(var(--zoom-multiplier, 1));
+	max-width: calc(100% / var(--zoom-multiplier, 1));
+	padding: var(--size-4-1) var(--size-4-2);
+	font-size: 0.95em;
+	font-weight: 500;
+	border-radius: var(--radius-s);
+	color: var(--cnd-badge-fg);
+	background-color: var(--cnd-badge-bg);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	pointer-events: none;
+}
+
+/* Position variants */
+.cnd-pos-top-right .canvas-node[data-cnd-text]::before {
+	right: 0;
+	left: auto;
+	transform-origin: bottom right;
+	transform: translate(0, -100%) scale(var(--zoom-multiplier, 1));
+}
+.cnd-pos-top-left .canvas-node[data-cnd-text]::before {
+	left: 0;
+	right: auto;
+	transform-origin: bottom left;
+	transform: translate(0, -100%) scale(var(--zoom-multiplier, 1));
+}
+.cnd-pos-top-center .canvas-node[data-cnd-text]::before {
+	left: 50%;
+	right: auto;
+	transform-origin: bottom center;
+	transform: translate(-50%, -100%) scale(var(--zoom-multiplier, 1));
+}
+
+/* Preset colors — map to Obsidian's canvas color tokens */
+.canvas-node[data-cnd-color="1"] {
+	--cnd-badge-fg: var(--color-red);
+	--cnd-badge-bg: rgba(var(--color-red-rgb), 0.12);
+}
+.canvas-node[data-cnd-color="2"] {
+	--cnd-badge-fg: var(--color-orange);
+	--cnd-badge-bg: rgba(var(--color-orange-rgb), 0.12);
+}
+.canvas-node[data-cnd-color="3"] {
+	--cnd-badge-fg: var(--color-yellow);
+	--cnd-badge-bg: rgba(var(--color-yellow-rgb), 0.12);
+}
+.canvas-node[data-cnd-color="4"] {
+	--cnd-badge-fg: var(--color-green);
+	--cnd-badge-bg: rgba(var(--color-green-rgb), 0.12);
+}
+.canvas-node[data-cnd-color="5"] {
+	--cnd-badge-fg: var(--color-cyan);
+	--cnd-badge-bg: rgba(var(--color-cyan-rgb), 0.12);
+}
+.canvas-node[data-cnd-color="6"] {
+	--cnd-badge-fg: var(--color-purple);
+	--cnd-badge-bg: rgba(var(--color-purple-rgb), 0.12);
+}
+
+/* Custom hex via inline --cnd-color */
+.canvas-node[data-cnd-color="custom"] {
+	--cnd-badge-fg: var(--cnd-color, var(--color-accent));
+	--cnd-badge-bg: color-mix(in srgb, var(--cnd-color, var(--color-accent)) 14%, transparent);
+}
+
+/* Global hide toggle */
+.canvas-wrapper.cnd-hidden .canvas-node[data-cnd-text]::before {
+	display: none;
+}
+
+/* Don't show the badge during presentation mode (Advanced Canvas
+   sets .presentation-mode on the wrapper). Defensive — no-op if
+   the class is absent. */
+.canvas-wrapper.presentation-mode .canvas-node[data-cnd-text]::before {
+	visibility: hidden;
+}
+
+/* Popup-menu button — match the existing icon button look */
+#cnd-popup-btn {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+}
+
+/* Card-menu toggle visual state when hidden */
+.canvas-card-menu-button#cnd-toggle-card {
+	cursor: pointer;
+}
