@@ -17,6 +17,7 @@ import {
 interface NodeDescription {
 	text: string;
 	color: string; // "1".."6" preset, or "#rrggbb"
+	compact?: boolean; // if true, the node renders only its first heading
 }
 
 interface CanvasNodeMin {
@@ -100,6 +101,7 @@ export default class CanvasNodeDescriptionPlugin extends Plugin {
 			for (const [, node] of canvas.nodes) {
 				node.nodeEl.removeAttribute("data-cnd-text");
 				node.nodeEl.removeAttribute("data-cnd-color");
+				node.nodeEl.removeAttribute("data-cnd-compact");
 				node.nodeEl.style.removeProperty("--cnd-color");
 			}
 		}
@@ -293,6 +295,7 @@ export default class CanvasNodeDescriptionPlugin extends Plugin {
 		if (!desc || !desc.text) {
 			el.removeAttribute("data-cnd-text");
 			el.removeAttribute("data-cnd-color");
+			el.removeAttribute("data-cnd-compact");
 			el.style.removeProperty("--cnd-color");
 			return;
 		}
@@ -307,6 +310,12 @@ export default class CanvasNodeDescriptionPlugin extends Plugin {
 		} else {
 			el.removeAttribute("data-cnd-color");
 			el.style.removeProperty("--cnd-color");
+		}
+
+		if (desc.compact) {
+			el.setAttribute("data-cnd-compact", "true");
+		} else {
+			el.removeAttribute("data-cnd-compact");
 		}
 	}
 }
@@ -475,6 +484,27 @@ class DescriptionModal extends Modal {
 		this.refreshSwatchActive();
 		this.refreshHexRow();
 
+		// --- Compact toggle ---
+		const compactRow = contentEl.createDiv({ cls: "cnd-row cnd-compact-row" });
+		const compactLabel = compactRow.createEl("label", {
+			cls: "cnd-compact-toggle",
+			attr: { for: "cnd-compact-input" },
+		});
+		const compactInput = compactLabel.createEl("input", {
+			attr: {
+				id: "cnd-compact-input",
+				type: "checkbox",
+			},
+		}) as HTMLInputElement;
+		compactInput.checked = !!this.desc.compact;
+		compactLabel.createSpan({
+			text: "Compact (show only first heading, double-click opens the note)",
+			cls: "cnd-compact-text",
+		});
+		compactInput.addEventListener("change", () => {
+			this.desc.compact = compactInput.checked;
+		});
+
 		// --- Footer buttons ---
 		const footer = contentEl.createDiv({ cls: "cnd-footer" });
 		const removeBtn = footer.createEl("button", {
@@ -513,6 +543,7 @@ class DescriptionModal extends Modal {
 			this.onSave({
 				text: this.desc.text.trim(),
 				color: this.desc.color || this.settings.defaultColor,
+				compact: this.desc.compact || undefined,
 			});
 		}
 		this.close();

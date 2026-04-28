@@ -99,6 +99,66 @@
 	visibility: hidden;
 }
 
+/* =====================================================================
+   Compact mode — show only the first heading of file nodes.
+   Double-click on the node still opens the full note natively.
+   ===================================================================== */
+
+.canvas-node[data-cnd-compact="true"] .markdown-embed-content > *,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-view > *,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > * {
+	display: none;
+}
+
+.canvas-node[data-cnd-compact="true"] .markdown-embed-content > .markdown-preview-view,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-view > .markdown-preview-sizer,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-sizer > .markdown-preview-section {
+	display: block;
+}
+
+/* Show only the first heading (h1-h3) inside the section */
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > div:first-of-type,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > h1:first-of-type,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > h2:first-of-type,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > h3:first-of-type {
+	display: block;
+}
+
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > div:first-of-type * {
+	display: none;
+}
+
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > div:first-of-type > h1,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > div:first-of-type > h2,
+.canvas-node[data-cnd-compact="true"] .markdown-preview-section > div:first-of-type > h3 {
+	display: block;
+	margin: 0;
+}
+
+/* Style the heading itself to fit the compact card */
+.canvas-node[data-cnd-compact="true"] h1,
+.canvas-node[data-cnd-compact="true"] h2,
+.canvas-node[data-cnd-compact="true"] h3 {
+	font-size: 1em;
+	font-weight: 600;
+	margin: 0;
+	padding: 0;
+	line-height: 1.3;
+	border: none;
+	white-space: normal;
+}
+
+/* Center vertically within the node */
+.canvas-node[data-cnd-compact="true"] .canvas-node-container {
+	display: flex;
+	align-items: center;
+}
+
+.canvas-node[data-cnd-compact="true"] .canvas-node-content {
+	width: 100%;
+	overflow: hidden;
+}
+
 /* Popup-menu button — match the existing icon button look */
 #cnd-popup-btn {
 	background: transparent;
@@ -350,4 +410,31 @@
 
 .cnd-btn-save {
 	min-width: 90px;
+}
+
+/* Compact toggle row */
+.cnd-compact-row {
+	margin-top: var(--size-4-2);
+}
+
+.cnd-compact-toggle {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+	cursor: pointer;
+	user-select: none;
+	color: var(--text-normal);
+	font-size: 0.95em;
+}
+
+.cnd-compact-toggle input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	margin: 0;
+	cursor: pointer;
+	accent-color: var(--interactive-accent);
+}
+
+.cnd-compact-text {
+	color: var(--text-normal);
 }
